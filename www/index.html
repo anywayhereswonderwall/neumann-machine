@@ -3,9 +3,36 @@
   <head>
     <meta charset="utf-8">
     <title>Neumann's machine</title>
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+    <div class="wrapper">
+        <div class="wrapper-inner">
+
+        </div>
+        <div class="wrapper-inner">
+          <ul id="memory-list">
+              <li>
+                  <div>Pointer</div>
+                  <div>Value</div>
+              </li>
+          </ul>
+            <ul id="instruction-list">
+                <li>
+                    <div>Pointer</div>
+                    <div>Instruction</div>
+                </li>
+            </ul>
+            <input type="text" list="cars" />
+            <datalist id="cars">
+                <option>Volvo</option>
+                <option>Saab</option>
+                <option>Mercedes</option>
+                <option>Audi</option>
+            </datalist>
+        </div>
+    </div>
     <script src="./bootstrap.js"></script>
   </body>
 </html>
