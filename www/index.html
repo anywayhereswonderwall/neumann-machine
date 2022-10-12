@@ -9,28 +9,44 @@
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
     <div class="wrapper">
         <div class="wrapper-inner">
+            <ul style="height: 80px">
+                <li><strong>Control unit</strong></li>
+                <li id="control-unit-out"></li>
+            </ul>
+
+            <ul style="height: 80px">
+                <li><strong>Accumulator</strong></li>
+                <li id="accumulator-out"></li>
+            </ul>
+
+            <ul style="height: 80px">
+                <li><strong>ALU</strong></li>
+                <li id="alu-out"></li>
+            </ul>
 
         </div>
         <div class="wrapper-inner">
+            <ul style="height: 320px">
+                <li><strong>PC</strong></li>
+                <li id="pc-out"></li>
+                <li><strong>CIR</strong></li>
+                <li id="cir-out"></li>
+                <li><strong>MAR</strong></li>
+                <li id="mar-out"></li>
+                <li><strong>MDR</strong></li>
+                <li id="mdr-out"></li>
+            </ul>
+            <button id="step-btn">STEP</button>
+        </div>
+        <div class="wrapper-inner">
           <ul id="memory-list">
-              <li>
-                  <div>Pointer</div>
-                  <div>Value</div>
-              </li>
           </ul>
             <ul id="instruction-list">
-                <li>
-                    <div>Pointer</div>
-                    <div>Instruction</div>
-                </li>
             </ul>
-            <input type="text" list="cars" />
-            <datalist id="cars">
-                <option>Volvo</option>
-                <option>Saab</option>
-                <option>Mercedes</option>
-                <option>Audi</option>
-            </datalist>
+            <div class="input-wrapper">
+                <input type="text" id="input">
+                <button id="input-btn">ADD</button>
+            </div>
         </div>
     </div>
     <script src="./bootstrap.js"></script>

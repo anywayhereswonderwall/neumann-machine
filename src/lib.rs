@@ -1,7 +1,6 @@
 mod utils;
 
 use std::collections::HashMap;
-use std::ptr::null;
 use wasm_bindgen::prelude::*;
 use serde::{Serialize, Deserialize};
 
@@ -10,26 +9,30 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize, Deserialize)]
 pub struct Computer {
     memory: HashMap<String, i32>,
-    instructions: HashMap<i32, (String, i32)>,
+    instructions: HashMap<i32, (String, String)>,
     program_counter: i32,
     program_counter_init: i32,
     current_instruction: (String, String),
-    accumulator: i32
+    memory_address_register: i32,
+    memory_data_register: (String, String),
+    accumulator: i32,
+    alu: (i32, i32)
 }
 
 #[wasm_bindgen]
 impl Computer {
-    // Constructor
+
     pub fn new() -> Self {
-        let mut memory_default = HashMap::new();
-        memory_default.insert("x".to_string(), 27);
         Self {
-            memory: memory_default,
+            memory: HashMap::new(),
             instructions: HashMap::new(),
             program_counter: 100,
             program_counter_init: 99,
-            current_instruction: ("LOAD".to_string(), "x".to_string()),
-            accumulator: 0
+            current_instruction: ("".to_string(), "".to_string()),
+            memory_address_register: 0,
+            memory_data_register: ("".to_string(), "".to_string()),
+            accumulator: 0,
+            alu: (0, 0)
         }
     }
 
@@ -43,8 +46,7 @@ impl Computer {
         serde_wasm_bindgen::to_value(&self.memory).unwrap()
     }
 
-
-    pub fn instructions_add(&mut self, instruction: String, ptr: i32) {
+    pub fn instructions_add(&mut self, instruction: String, ptr: String) {
         self.program_counter_init += 1;
         let v = (instruction, ptr);
         self.instructions.insert(self.program_counter_init, v);
@@ -54,16 +56,63 @@ impl Computer {
         serde_wasm_bindgen::to_value(&self.instructions).unwrap()
     }
 
-    pub fn load(&mut self) {
-        self.accumulator = self.memory[&self.current_instruction.1];
+    pub fn counter_get(&self) -> i32 {
+        self.program_counter
     }
 
-    pub fn accumulator(&self) -> i32 {
+    pub fn mar_get(&self) -> i32 {
+        self.memory_address_register
+    }
+
+    pub fn mdr_get(&self) -> JsValue {
+        serde_wasm_bindgen::to_value(&self.memory_data_register).unwrap()
+    }
+
+    pub fn cir_get(&self) -> JsValue {
+        serde_wasm_bindgen::to_value(&self.current_instruction).unwrap()
+    }
+
+    pub fn accumulator_get(&self) -> i32 {
         self.accumulator
     }
 
-    pub fn input(&self, s: String) -> JsValue {
-        let res: Vec<String> = s.split_whitespace().map(|s| s.to_string()).collect();
-        serde_wasm_bindgen::to_value(&res).unwrap()
+    pub fn alu_get(&self) -> JsValue {
+        serde_wasm_bindgen::to_value(&self.alu).unwrap()
     }
+
+    pub fn input(&mut self, s: String)  {
+        let res: Vec<String> = s.split_whitespace().map(|s| s.to_string()).collect();
+        if res.contains(&"=".to_string()) && res.len() == 3 {
+            let ptr = res[0].clone();
+            let val = res[2].parse::<i32>().unwrap();
+            self.memory_add(ptr, val);
+        } else {
+            let instruction = res[0].clone();
+            let ptr = res[1].clone();
+            self.instructions_add(instruction, ptr);
+        }
+    }
+
+    pub fn step(&mut self) {
+        self.memory_address_register = self.program_counter;
+        self.memory_data_register = self.instructions[&self.program_counter].clone();
+        self.current_instruction = self.memory_data_register.clone();
+        self.program_counter += 1;
+        match *&self.current_instruction.0.as_str() {
+            "LOAD" => {
+                self.alu = (0, 0);
+                self.accumulator = self.memory[&self.current_instruction.1];
+            },
+            "STORE" => {
+                self.alu = (0, 0);
+                self.memory_add(self.current_instruction.1.clone(), self.accumulator);
+            },
+            "ADD" => {
+                self.alu = (self.accumulator, self.memory[&self.current_instruction.1]);
+                self.accumulator += self.memory[&self.current_instruction.1];
+            },
+            _ => {}
+        }
+    }
+
 }

@@ -9,14 +9,34 @@
     display: flex;
 }
 .wrapper-inner {
-    width: 50%;
+    position: relative;
+    width: 33.33%;
     height: 100%;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+.input-wrapper {
+    height: 100px;
+    width: 200px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    height: 80px;
+    font-size: 26px;
+    text-align: center;
+}
+.input-wrapper button {
+    width: 100%;
+    height: 40px;
+}
+
 ul {
     list-style: none;
     width: 200px;
-    height: 600px;
+    height: 300px;
     border: 1px solid black;
 }
 ul li {
@@ -31,4 +51,9 @@ ul li {
 ul li div {
     width: 50%;
     text-align: center;
+}
+
+#step-btn {
+    height: 40px;
+    width: 200px;
 }
